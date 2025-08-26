@@ -6,20 +6,19 @@
   <title>Copy Prompt</title>
   <style>
     :root{
-      --bg:#f6f3ec;           /* كريمي */
+      --bg:#f6f3ec;
       --card:#ffffff; 
       --edge:#e5e7eb;
       --muted:#64748b;
-      --ok:#16a34a;           /* أخضر بعد النسخ */
+      --ok:#16a34a;
       --err:#e11d48;
       --accent:#ffd04d; 
-      --accent2:#ffbd2b;      /* أصفر افتراضي للزر */
+      --accent2:#ffbd2b;
       --radius:28px;
       --shadow:0 24px 80px rgba(31,41,55,.18);
       --maxw:min(980px,96vw);
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background:var(--bg); color:#0f172a;
@@ -27,225 +26,90 @@
       padding:18px;
     }
     .wrap{ width:var(--maxw); }
-
-    /* اللوجو كبير ومتمدد */
-    .logo{
-      display:flex; justify-content:center; align-items:center;
-      margin:0 0 14px;
-    }
-    .logo img{
-      width:min(520px,88vw); height:auto; display:block; 
-      border-radius:20px;
-    }
+    .logo{display:flex; justify-content:center; margin:0 0 14px;}
+    .logo img{width:min(520px,88vw); border-radius:20px;}
 
     .card{
-      background:var(--card);
-      border:1px solid var(--edge); border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:28px 20px 26px; text-align:center;
+      background:var(--card); border:1px solid var(--edge); border-radius:var(--radius);
+      box-shadow:var(--shadow); padding:28px 20px; text-align:center;
     }
-    .title{ margin:2px 0 14px; line-height:1.15; letter-spacing:.2px; font-weight:900 }
-    .tline{
-      display:block; word-break:break-word;
-      font-size:clamp(24px,6.6vw,44px);
-    }
-    .tline.en{ direction:ltr; opacity:.95; font-size:clamp(20px,5.2vw,34px); }
+    .title{ margin:2px 0 14px; font-weight:900 }
+    .tline{display:block; font-size:clamp(24px,6vw,44px);}
+    .tline.en{ font-size:clamp(20px,5vw,32px); direction:ltr; }
 
-    .loader{
-      display:inline-flex; align-items:center; gap:10px; color:var(--muted);
-      font-size:15px; margin:6px 0 14px;
-    }
-    .spin{
-      width:16px; height:16px; border-radius:50%;
-      border:3px solid rgba(0,0,0,.08); border-top-color:#f59e0b;
-      animation:spin .8s linear infinite;
-    }
-    @keyframes spin{ to{ transform:rotate(360deg) } }
+    .loader{display:inline-flex; align-items:center; gap:10px; color:var(--muted);}
+    .spin{width:16px;height:16px;border:3px solid rgba(0,0,0,.08);border-top-color:#f59e0b;border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
     .btn{
-      position:relative; display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      display:none; justify-content:center; align-items:center; gap:10px;
       min-height:70px; padding:0 30px; border-radius:18px; border:0; cursor:pointer;
-      font-weight:900; font-size:clamp(16px,4.6vw,20px);
+      font-weight:900; font-size:18px; /* أصغر افتراضي */
       color:#0b0b0b; background:linear-gradient(135deg,var(--accent),var(--accent2));
       box-shadow:0 16px 56px rgba(0,0,0,.15);
-      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease, background .2s ease, color .2s ease;
-      -webkit-tap-highlight-color:transparent; overflow:hidden;
+      transition:transform .15s, box-shadow .15s, background .2s, color .2s;
     }
-    .btn:hover{ transform:translateY(-1px); box-shadow:0 22px 72px rgba(0,0,0,.2); filter:saturate(1.03) }
-    .btn:active{ transform:scale(.985) }
-    .btn[disabled]{ opacity:.6; cursor:progress }
+    .btn:hover{ transform:translateY(-1px); }
+    .btn.done{ color:#fff; background:linear-gradient(135deg,#22c55e,#16a34a); } /* يظل أخضر بعد النسخ */
 
-    /* تحول أخضر بعد النسخ */
-    .btn.done{ color:#fff; background:linear-gradient(135deg,#22c55e,#16a34a); animation:btnPop .28s ease }
-    @keyframes btnPop{ 0%{transform:scale(.985)} 70%{transform:scale(1.02)} 100%{transform:scale(1)} }
+    .hint{margin-top:12px;font-size:14px;min-height:20px;color:var(--muted);}
+    .hint.ok{color:var(--ok)} .hint.err{color:var(--err)}
+    .howto{margin-top:18px;padding:14px;border:1px solid var(--edge);border-radius:18px;background:#f9fafb;display:none;}
+    .howto.show{display:block}
 
-    .ico{ width:22px; height:22px; display:inline-block }
-    .hint{ margin-top:12px; color:var(--muted); font-size:14px; min-height:20px; }
-    .hint.ok{ color:var(--ok) }
-    .hint.err{ color:var(--err) }
-
-    .howto{
-      margin:18px auto 0; padding:18px 16px; text-align:center; white-space:pre-wrap; word-break:break-word;
-      color:#0f172a; background:#f9fafb; border:1px solid var(--edge);
-      border-radius:18px; display:none; font-size:clamp(14px,3.6vw,16px);
-    }
-    .howto.show{ display:block; animation:pop .28s ease-out }
-    @keyframes pop{ from{ opacity:0; transform:translateY(8px) scale(.98) } to{ opacity:1; transform:none } }
-
-    /* Ripple داخل الزر */
-    .ripple{
-      position:absolute; border-radius:50%; transform:scale(0); pointer-events:none;
-      background:rgba(255,255,255,.35); animation:ripple .6s linear;
-    }
-    @keyframes ripple{ to{ transform:scale(4); opacity:0 } }
-
-    /* textarea مخفي بالكامل لمنع ظهوره */
-    #ta{ position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
-
-    @media (max-width:520px){
-      .card{ padding:24px 14px 22px }
-      .btn{ width:100%; min-height:76px; font-size:18px }
-      .logo img{ width:min(420px,92vw) }
+    @media(max-width:520px){
+      .btn{width:100%;min-height:64px;font-size:16px;} /* أصغر في الجوال */
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="logo"><img id="logo" alt="logo"/></div>
-
-    <div class="card" role="region" aria-label="Copy prompt">
+    <div class="logo"><img id="logo" src="https://i.ibb.co/3mRk61Yt/shihab-logo.png" alt="logo"/></div>
+    <div class="card">
       <div class="title">
         <span class="tline ar" id="tAr"></span>
         <span class="tline en" id="tEn"></span>
       </div>
-
-      <!-- لودينج يظهر أولاً -->
-      <div class="loader" id="loader"><span class="spin"></span> <span>جارٍ جلب البيانات…</span></div>
-
-      <!-- زر النسخ مخفي حتى يكتمل الجلب -->
-      <button class="btn" id="copyBtn" type="button" style="display:none" aria-live="polite">
-        <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M9 8h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/><path d="M7 12H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/></svg>
-        <span>نسخ البرومبت / Copy Prompt</span>
-      </button>
-
+      <div class="loader" id="loader"><span class="spin"></span> جارٍ جلب البيانات…</div>
+      <button class="btn" id="copyBtn"><span>📋 نسخ البرومبت / Copy Prompt</span></button>
       <div class="hint" id="hint"></div>
       <div class="howto" id="howto"></div>
-
-      <!-- textarea للنسخ مخفي -->
-      <textarea id="ta" readonly aria-hidden="true"></textarea>
+      <textarea id="ta" style="position:absolute;left:-9999px"></textarea>
     </div>
   </div>
 
   <script>
-    /* ====== إعداداتك ====== */
-    const BASE_EXEC = "https://script.google.com/macros/s/AKfycbyu4WO5D0W-ft1mP3JnWHjIRYzGfmE3wIjjRZUiKZ5bVbPe5-tGIx2k_UvsxRO7sIf1/exec";
-    const LOGO_URL  = "https://i.ibb.co/3mRk61Yt/shihab-logo.png"; // بدّله برابط صورتك الجديد متى ما جهزت
+    const BASE_EXEC="https://script.google.com/macros/s/AKfycbyu4WO5D0W-ft1mP3JnWHjIRYzGfmE3wIjjRZUiKZ5bVbPe5-tGIx2k_UvsxRO7sIf1/exec";
 
-    document.getElementById("logo").src = LOGO_URL;
+    const qs=new URLSearchParams(location.search);
+    const rk=qs.get("rk"); const t=qs.get("t")?decodeURIComponent(qs.get("t")):"";
 
-    /* ====== أدوات لغوية أدق ====== */
-    const isArChar = (ch)=> /[\u0600-\u06FF]/.test(ch);
-    function splitSmart(input){
-      const s = (input||"").replace(/\s+/g," ").trim();
-      if(!s) return {ar:"", en:""};
-      // قسّم مع الحفاظ على الترتيب—نبني سلاسل عربية وسلاسل لاتينية كما وردت
-      let arParts=[], enParts=[], buf="", bufIsAr=null;
-      for(const ch of s){
-        const curIsAr = isArChar(ch);
-        if (bufIsAr===null) { bufIsAr = curIsAr; buf = ch; continue; }
-        if (curIsAr===bufIsAr) { buf += ch; }
-        else { (bufIsAr?arParts:enParts).push(buf.trim()); buf = ch; bufIsAr = curIsAr; }
-      }
-      (bufIsAr?arParts:enParts).push(buf.trim());
-      const ar = arParts.filter(Boolean).join(" ");
-      const en = enParts.filter(Boolean).join(" ");
-      return {ar, en};
-    }
-    function renderTitle(s){
-      const {ar,en} = splitSmart(s);
-      const tAr = document.getElementById("tAr");
-      const tEn = document.getElementById("tEn");
-      tAr.textContent = ar || "";
-      tEn.textContent = en || "";
-      tAr.style.display = ar ? "block" : "none";
-      tEn.style.display = en ? "block" : "none";
-      if(!ar && !en){ tAr.textContent = s || "Copy Prompt"; tAr.style.display = "block"; }
-    }
+    const tAr=document.getElementById("tAr"),tEn=document.getElementById("tEn");
+    function splitSmart(s){const isAr=(c)=>/[\u0600-\u06FF]/.test(c);let ar="",en="";for(const w of s.split(" ")){(isAr(w)?ar:en)+=" "+w}return{ar:ar.trim(),en:en.trim()}}
+    function renderTitle(txt){const {ar,en}=splitSmart(txt);tAr.textContent=ar;tEn.textContent=en}
 
-    /* ====== قراءة باراميترات الرابط ====== */
-    const qs = new URLSearchParams(location.search);
-    const rk = qs.get("rk") || "";
-    const t  = qs.get("t") ? decodeURIComponent(qs.get("t")) : "";
-    renderTitle(t);
+    if(t) renderTitle(t);
 
-    const copyBtn = document.getElementById("copyBtn");
-    const loader  = document.getElementById("loader");
-    const hintEl  = document.getElementById("hint");
-    const howtoEl = document.getElementById("howto");
-    const ta      = document.getElementById("ta");
+    const loader=document.getElementById("loader"),copyBtn=document.getElementById("copyBtn"),hint=document.getElementById("hint"),howto=document.getElementById("howto"),ta=document.getElementById("ta");
 
-    /* ====== تحميل البيانات ====== */
     async function load(){
-      if(!rk){ loader.style.display="none"; hintEl.className="hint err"; hintEl.textContent="⚠️ Missing rk"; return; }
       try{
-        const url = `${BASE_EXEC}?rk=${encodeURIComponent(rk)}&json=1`;
-        const res = await fetch(url, { mode:"cors", cache:"no-store" });
-        if(!res.ok) throw new Error("network");
-        const data = await res.json();
-
-        window.__PROMPT__ = data.prompt || "";
-        window.__HOWTO__  = data.howto  || "";
-
-        loader.style.display = "none";
-        copyBtn.style.display = "inline-flex";   // أظهر الزر الآن
-        hintEl.className = "hint ok";
-        hintEl.textContent = "جاهز للنسخ ✅";
-
-        // لو العنوان فاضي، استخدم id وقسّمه ذكيًا
-        if(!t && data.id){ renderTitle(data.id); }
-      }catch(e){
-        loader.style.display = "none";
-        hintEl.className = "hint err";
-        hintEl.textContent = "⚠️ تعذر جلب البيانات";
-      }
+        const res=await fetch(`${BASE_EXEC}?rk=${encodeURIComponent(rk)}&json=1`);
+        const data=await res.json();
+        window.__PROMPT__=data.prompt||""; window.__HOWTO__=data.howto||"";
+        loader.style.display="none"; copyBtn.style.display="inline-flex";
+        if(!t && data.id) renderTitle(data.id);
+      }catch(e){loader.style.display="none";hint.className="hint err";hint.textContent="⚠️ خطأ في الجلب";}
     }
 
-    // ripple تأثير
-    copyBtn.addEventListener("click", (ev)=>{
-      const r = document.createElement("span");
-      const d = Math.max(copyBtn.clientWidth, copyBtn.clientHeight);
-      const rect = copyBtn.getBoundingClientRect();
-      r.className = "ripple";
-      r.style.width = r.style.height = d + "px";
-      r.style.left = (ev.clientX - rect.left - d/2) + "px";
-      r.style.top  = (ev.clientY - rect.top  - d/2) + "px";
-      copyBtn.appendChild(r);
-      setTimeout(()=> r.remove(), 600);
-    }, { passive:true });
-
-    // النسخ + إظهار كيف يُستخدم بعد النجاح
-    async function copyNow(){
-      const text = window.__PROMPT__ || "";
-      if(!text){ hintEl.className="hint err"; hintEl.textContent="⚠️ لا يوجد نص للنسخ"; return; }
-
+    copyBtn.addEventListener("click",async()=>{
       try{
-        ta.value = text; ta.select(); ta.setSelectionRange(0, ta.value.length);
-        let ok=false;
-        try{ ok = document.execCommand("copy"); }catch{}
-        if(!ok && navigator.clipboard){ await navigator.clipboard.writeText(text); ok = true; }
-
-        // نجاح: الزر أخضر + رسالة + أظهر كيف يُستخدم
+        await navigator.clipboard.writeText(window.__PROMPT__||"");
         copyBtn.classList.add("done");
-        hintEl.className="hint ok"; hintEl.textContent="تم النسخ ✅";
-        const h = String(window.__HOWTO__||"").trim();
-        if(h){ howtoEl.textContent = h; howtoEl.classList.add("show"); }
-        setTimeout(()=> copyBtn.classList.remove("done"), 700);
-      }catch{
-        hintEl.className="hint err"; hintEl.textContent="⚠️ انسخ يدويًا";
-        alert("اضغط مطوّلًا لنسخ النص أو Ctrl+C");
-      }
-    }
-    copyBtn.addEventListener("click", copyNow);
+        hint.className="hint ok"; hint.textContent="تم النسخ ✅";
+        if(window.__HOWTO__){howto.textContent=window.__HOWTO__;howto.classList.add("show")}
+      }catch{hint.className="hint err";hint.textContent="⚠️ انسخ يدويًا"}
+    });
 
     load();
   </script>
