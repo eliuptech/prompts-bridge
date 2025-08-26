@@ -6,46 +6,50 @@
   <title>Copy Prompt</title>
   <style>
     :root{
-      --bg:#0b1220; --bg2:#0e1628;
-      --card:#0f1a30; --edge:#1f2a44;
-      --muted:#cbd5e1; --ok:#22c55e; --err:#f43f5e;
-      --accent:#ffd04d; --accent2:#ffbd2b;
-      --maxw: min(900px, 96vw);
-      --btnH: 68px;
-      --radius: 26px;
+      --bg:#f6f3ec;           /* كريمي */
+      --card:#ffffff; 
+      --edge:#e5e7eb;
+      --muted:#64748b;
+      --ok:#16a34a;           /* أخضر بعد النسخ */
+      --err:#e11d48;
+      --accent:#ffd04d; 
+      --accent2:#ffbd2b;      /* أصفر افتراضي للزر */
+      --radius:28px;
+      --shadow:0 24px 80px rgba(31,41,55,.18);
+      --maxw:min(980px,96vw);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:#fff;
-      background:
-        radial-gradient(900px 600px at 100% -10%, #15213f, transparent 55%),
-        radial-gradient(900px 600px at   0% -10%, #121a34, transparent 50%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
+      background:var(--bg); color:#0f172a;
       display:flex; align-items:center; justify-content:center;
       padding:18px;
     }
     .wrap{ width:var(--maxw); }
-    .logo{ display:flex; justify-content:center; margin:0 0 10px; }
-    .logo img{ width:min(220px,60vw); height:auto; display:block; }
+
+    /* اللوجو كبير ومتمدد */
+    .logo{
+      display:flex; justify-content:center; align-items:center;
+      margin:0 0 14px;
+    }
+    .logo img{
+      width:min(520px,88vw); height:auto; display:block; 
+      border-radius:20px;
+    }
 
     .card{
-      background:linear-gradient(180deg,#0e172b,#0d1629);
+      background:var(--card);
       border:1px solid var(--edge); border-radius:var(--radius);
-      box-shadow:0 36px 140px rgba(0,0,0,.55);
-      padding:24px 18px 26px; text-align:center;
+      box-shadow:var(--shadow);
+      padding:28px 20px 26px; text-align:center;
     }
-    .title{
-      margin:4px 0 14px; line-height:1.12; letter-spacing:.2px;
-      font-weight:900;
-    }
+    .title{ margin:2px 0 14px; line-height:1.15; letter-spacing:.2px; font-weight:900 }
     .tline{
-      display:block;
-      font-size:clamp(22px, 6.8vw, 40px);
-      word-break:break-word;
+      display:block; word-break:break-word;
+      font-size:clamp(24px,6.6vw,44px);
     }
-    .tline.en{ direction:ltr; font-size:clamp(20px, 5.6vw, 32px); opacity:.95 }
+    .tline.en{ direction:ltr; opacity:.95; font-size:clamp(20px,5.2vw,34px); }
 
     .loader{
       display:inline-flex; align-items:center; gap:10px; color:var(--muted);
@@ -53,54 +57,55 @@
     }
     .spin{
       width:16px; height:16px; border-radius:50%;
-      border:3px solid rgba(255,255,255,.18); border-top-color:#fbbf24;
+      border:3px solid rgba(0,0,0,.08); border-top-color:#f59e0b;
       animation:spin .8s linear infinite;
     }
     @keyframes spin{ to{ transform:rotate(360deg) } }
 
     .btn{
       position:relative; display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      min-height:var(--btnH); padding:0 28px; border-radius:18px; border:0; cursor:pointer;
-      font-weight:900; font-size:clamp(16px, 4.5vw, 20px);
-      background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000;
-      box-shadow:0 18px 64px rgba(0,0,0,.35);
-      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      min-height:70px; padding:0 30px; border-radius:18px; border:0; cursor:pointer;
+      font-weight:900; font-size:clamp(16px,4.6vw,20px);
+      color:#0b0b0b; background:linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow:0 16px 56px rgba(0,0,0,.15);
+      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease, background .2s ease, color .2s ease;
       -webkit-tap-highlight-color:transparent; overflow:hidden;
     }
-    .btn:hover{ transform:translateY(-1px); box-shadow:0 22px 78px rgba(0,0,0,.42); filter:saturate(1.03) }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 22px 72px rgba(0,0,0,.2); filter:saturate(1.03) }
     .btn:active{ transform:scale(.985) }
     .btn[disabled]{ opacity:.6; cursor:progress }
 
+    /* تحول أخضر بعد النسخ */
+    .btn.done{ color:#fff; background:linear-gradient(135deg,#22c55e,#16a34a); animation:btnPop .28s ease }
+    @keyframes btnPop{ 0%{transform:scale(.985)} 70%{transform:scale(1.02)} 100%{transform:scale(1)} }
+
     .ico{ width:22px; height:22px; display:inline-block }
-    .hint{ margin-top:12px; color:var(--muted); font-size:14px; min-height:20px }
+    .hint{ margin-top:12px; color:var(--muted); font-size:14px; min-height:20px; }
     .hint.ok{ color:var(--ok) }
     .hint.err{ color:var(--err) }
 
     .howto{
       margin:18px auto 0; padding:18px 16px; text-align:center; white-space:pre-wrap; word-break:break-word;
-      color:#e5e7eb; background:#0f1627d0; border:1px solid var(--edge);
-      border-radius:18px; display:none;
-      font-size:clamp(14px,3.8vw,16px);
+      color:#0f172a; background:#f9fafb; border:1px solid var(--edge);
+      border-radius:18px; display:none; font-size:clamp(14px,3.6vw,16px);
     }
     .howto.show{ display:block; animation:pop .28s ease-out }
     @keyframes pop{ from{ opacity:0; transform:translateY(8px) scale(.98) } to{ opacity:1; transform:none } }
 
-    /* success animation inside button */
-    .btn.done{
-      background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff;
-      animation:btnPop .28s ease;
-    }
-    @keyframes btnPop{ 0%{transform:scale(.985)} 70%{transform:scale(1.02)} 100%{transform:scale(1)} }
+    /* Ripple داخل الزر */
     .ripple{
       position:absolute; border-radius:50%; transform:scale(0); pointer-events:none;
-      background:rgba(255,255,255,.38); animation:ripple .6s linear;
+      background:rgba(255,255,255,.35); animation:ripple .6s linear;
     }
-    @keyframes ripple{ to { transform:scale(4); opacity:0 } }
+    @keyframes ripple{ to{ transform:scale(4); opacity:0 } }
+
+    /* textarea مخفي بالكامل لمنع ظهوره */
+    #ta{ position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
 
     @media (max-width:520px){
-      .card{ padding:22px 14px 24px }
-      .btn{ width:100%; min-height:72px; font-size:18px }
-      .logo img{ width:min(180px,58vw) }
+      .card{ padding:24px 14px 22px }
+      .btn{ width:100%; min-height:76px; font-size:18px }
+      .logo img{ width:min(420px,92vw) }
     }
   </style>
 </head>
@@ -126,43 +131,40 @@
       <div class="hint" id="hint"></div>
       <div class="howto" id="howto"></div>
 
+      <!-- textarea للنسخ مخفي -->
       <textarea id="ta" readonly aria-hidden="true"></textarea>
     </div>
   </div>
 
   <script>
     /* ====== إعداداتك ====== */
-    // رابط الويب آب (exec)
     const BASE_EXEC = "https://script.google.com/macros/s/AKfycbyu4WO5D0W-ft1mP3JnWHjIRYzGfmE3wIjjRZUiKZ5bVbPe5-tGIx2k_UvsxRO7sIf1/exec";
-    // ضع رابط شعارك هنا عندما ترسله لي
-    const LOGO_URL = "https://i.ibb.co/3mRk61Yt/shihab-logo.png"; // استبدله برابط صورتك لاحقًا
+    const LOGO_URL  = "https://i.ibb.co/3mRk61Yt/shihab-logo.png"; // بدّله برابط صورتك الجديد متى ما جهزت
 
-    /* ====== عناصر DOM ====== */
-    const tAr = document.getElementById("tAr");
-    const tEn = document.getElementById("tEn");
-    const copyBtn = document.getElementById("copyBtn");
-    const loader  = document.getElementById("loader");
-    const hintEl  = document.getElementById("hint");
-    const howtoEl = document.getElementById("howto");
-    const ta      = document.getElementById("ta");
     document.getElementById("logo").src = LOGO_URL;
 
-    /* ====== أدوات لغوية ====== */
-    const isAr = (s)=> /[\u0600-\u06FF]/.test(s||"");
-    function splitBi(str){
-      const txt = (str||"").trim().replace(/\s+/g," ");
-      if(!txt) return {ar:"", en:""};
-      const parts = txt.split(/[-–—|/•·]+/).map(p=>p.trim()).filter(Boolean);
-      if(parts.length>1){
-        let ar=[], en=[]; parts.forEach(p => (isAr(p)?ar:en).push(p));
-        return { ar: ar.join(" "), en: en.join(" ") };
+    /* ====== أدوات لغوية أدق ====== */
+    const isArChar = (ch)=> /[\u0600-\u06FF]/.test(ch);
+    function splitSmart(input){
+      const s = (input||"").replace(/\s+/g," ").trim();
+      if(!s) return {ar:"", en:""};
+      // قسّم مع الحفاظ على الترتيب—نبني سلاسل عربية وسلاسل لاتينية كما وردت
+      let arParts=[], enParts=[], buf="", bufIsAr=null;
+      for(const ch of s){
+        const curIsAr = isArChar(ch);
+        if (bufIsAr===null) { bufIsAr = curIsAr; buf = ch; continue; }
+        if (curIsAr===bufIsAr) { buf += ch; }
+        else { (bufIsAr?arParts:enParts).push(buf.trim()); buf = ch; bufIsAr = curIsAr; }
       }
-      // fallback كلمة بكلمة
-      let ar=[], en=[]; txt.split(" ").forEach(w => (isAr(w)?ar:en).push(w));
-      return { ar: ar.join(" "), en: en.join(" ") };
+      (bufIsAr?arParts:enParts).push(buf.trim());
+      const ar = arParts.filter(Boolean).join(" ");
+      const en = enParts.filter(Boolean).join(" ");
+      return {ar, en};
     }
     function renderTitle(s){
-      const {ar,en} = splitBi(s);
+      const {ar,en} = splitSmart(s);
+      const tAr = document.getElementById("tAr");
+      const tEn = document.getElementById("tEn");
       tAr.textContent = ar || "";
       tEn.textContent = en || "";
       tAr.style.display = ar ? "block" : "none";
@@ -176,7 +178,13 @@
     const t  = qs.get("t") ? decodeURIComponent(qs.get("t")) : "";
     renderTitle(t);
 
-    /* ====== جلب البيانات وإدارة حالة الزر ====== */
+    const copyBtn = document.getElementById("copyBtn");
+    const loader  = document.getElementById("loader");
+    const hintEl  = document.getElementById("hint");
+    const howtoEl = document.getElementById("howto");
+    const ta      = document.getElementById("ta");
+
+    /* ====== تحميل البيانات ====== */
     async function load(){
       if(!rk){ loader.style.display="none"; hintEl.className="hint err"; hintEl.textContent="⚠️ Missing rk"; return; }
       try{
@@ -186,15 +194,14 @@
         const data = await res.json();
 
         window.__PROMPT__ = data.prompt || "";
-        window.__HOWTO__  = data.howto || "";
+        window.__HOWTO__  = data.howto  || "";
 
-        // إظهار الزر بعد الجلب
         loader.style.display = "none";
-        copyBtn.style.display = "inline-flex";
+        copyBtn.style.display = "inline-flex";   // أظهر الزر الآن
         hintEl.className = "hint ok";
         hintEl.textContent = "جاهز للنسخ ✅";
 
-        // لو العنوان فاضي استخدم id
+        // لو العنوان فاضي، استخدم id وقسّمه ذكيًا
         if(!t && data.id){ renderTitle(data.id); }
       }catch(e){
         loader.style.display = "none";
@@ -203,7 +210,7 @@
       }
     }
 
-    // تأثير ripple داخل الزر
+    // ripple تأثير
     copyBtn.addEventListener("click", (ev)=>{
       const r = document.createElement("span");
       const d = Math.max(copyBtn.clientWidth, copyBtn.clientHeight);
@@ -227,13 +234,12 @@
         try{ ok = document.execCommand("copy"); }catch{}
         if(!ok && navigator.clipboard){ await navigator.clipboard.writeText(text); ok = true; }
 
-        // حالة نجاح
+        // نجاح: الزر أخضر + رسالة + أظهر كيف يُستخدم
         copyBtn.classList.add("done");
         hintEl.className="hint ok"; hintEl.textContent="تم النسخ ✅";
-        // عرض كيف يُستخدم بعد النسخ فقط
-        const htxt = String(window.__HOWTO__||"").trim();
-        if(htxt){ howtoEl.textContent = htxt; howtoEl.classList.add("show"); }
-        setTimeout(()=> copyBtn.classList.remove("done"), 600);
+        const h = String(window.__HOWTO__||"").trim();
+        if(h){ howtoEl.textContent = h; howtoEl.classList.add("show"); }
+        setTimeout(()=> copyBtn.classList.remove("done"), 700);
       }catch{
         hintEl.className="hint err"; hintEl.textContent="⚠️ انسخ يدويًا";
         alert("اضغط مطوّلًا لنسخ النص أو Ctrl+C");
@@ -241,7 +247,6 @@
     }
     copyBtn.addEventListener("click", copyNow);
 
-    // ابدأ التحميل
     load();
   </script>
 </body>
