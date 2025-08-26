@@ -1,63 +1,172 @@
-
 <!doctype html>
 <html lang="ar" dir="auto">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Copy Prompt</title>
   <style>
-    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:#0f172a;color:#fff;
-         display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}
-    .card{width:min(800px,96vw);background:#1e293b;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.6);
-          padding:24px;text-align:center}
-    h1{margin:0 0 16px;font-size:clamp(22px,4vw,28px)}
-    .btn{display:inline-block;padding:16px 22px;border-radius:14px;border:0;font-weight:800;
-         font-size:clamp(18px,4.5vw,22px);cursor:pointer;background:#ffd04d;color:#000}
-    .btn:active{transform:scale(.98)}
-    .hint{margin-top:14px;opacity:.9;font-size:16px}
-    textarea{position:absolute;left:-9999px;top:-9999px}
+    :root{
+      --bg:#0b1220; --bg2:#0e1628;
+      --card:#101a2f; --muted:#cbd5e1;
+      --accent:#ffd04d; --accent2:#ffbd2b; --ok:#22c55e; --err:#f43f5e;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:#fff; background:
+        radial-gradient(900px 600px at 100% -10%, #14213f, transparent 55%),
+        radial-gradient(900px 600px at 0% -10%, #121a34, transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      display:flex; align-items:center; justify-content:center; padding:18px;
+    }
+    .wrap{ width:min(920px, 96vw); }
+    .card{
+      background:linear-gradient(180deg, #0e172b, #0d1629);
+      border:1px solid #1f2a44; border-radius:26px;
+      box-shadow:0 30px 120px rgba(0,0,0,.55);
+      padding:28px 20px; text-align:center;
+    }
+    .title{
+      margin:0 0 14px; font-weight:900; letter-spacing:.2px; line-height:1.15;
+      font-size:clamp(24px, 6vw, 40px); word-break:break-word;
+    }
+    .howto{
+      margin:8px auto 0; color:var(--muted);
+      font-size:clamp(14px, 3.8vw, 16px); white-space:pre-wrap; word-break:break-word;
+    }
+    .btn{
+      --h:64px;
+      position:relative; display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      min-height:var(--h); padding:0 26px; border-radius:18px; border:0; cursor:pointer;
+      font-weight:900; font-size:clamp(16px, 4.5vw, 20px);
+      background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#000;
+      box-shadow:0 18px 60px rgba(0,0,0,.35); transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      -webkit-tap-highlight-color:transparent; overflow:hidden;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 22px 70px rgba(0,0,0,.42); filter:saturate(1.03); }
+    .btn:active{ transform:scale(.985); }
+    .btn[disabled]{ opacity:.6; cursor:progress; }
+    .btn .ico{ width:22px; height:22px; display:inline-block }
+    .hint{
+      margin-top:14px; font-size:15px; color:var(--muted);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .hint .dot{ width:10px; height:10px; border-radius:50%; background:#fbbf24; box-shadow:0 0 0 0 rgba(251,191,36,.6); animation:pulse 1.2s infinite }
+    @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(251,191,36,.6)} 70%{box-shadow:0 0 0 12px rgba(251,191,36,0)} 100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} }
+    .hint.ok{ color:var(--ok) }
+    .hint.err{ color:var(--err) }
+    textarea{ position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0 }
+    /* ripple effect */
+    .ripple{
+      position:absolute; border-radius:50%; transform:scale(0); pointer-events:none;
+      background:rgba(255,255,255,.35); animation:ripple .6s linear;
+    }
+    @keyframes ripple{ to { transform:scale(4); opacity:0 } }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1 id="title">Copy Prompt</h1>
-    <button class="btn" id="copyBtn">نسخ البرومبت</button>
-    <div class="hint" id="hint">جارٍ التحميل...</div>
-    <textarea id="ta" readonly></textarea>
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Copy prompt panel">
+      <h1 class="title" id="title">Copy Prompt</h1>
+
+      <button class="btn" id="copyBtn" type="button">
+        <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M9 8h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/><path d="M7 12H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/></svg>
+        <span id="btnLabel">نسخ البرومبت</span>
+      </button>
+
+      <div class="hint" id="hint"><span class="dot"></span> جارٍ جلب البيانات…</div>
+      <div class="howto" id="howto"></div>
+
+      <textarea id="ta" readonly aria-hidden="true"></textarea>
+    </div>
   </div>
+
   <script>
+    // رابط الويب آب (exec) — تم ضبطه حسب طلبك
     const BASE_EXEC = "https://script.google.com/macros/s/AKfycbyu4WO5D0W-ft1mP3JnWHjIRYzGfmE3wIjjRZUiKZ5bVbPe5-tGIx2k_UvsxRO7sIf1/exec";
+
+    // قراءة باراميترات الرابط
     const qs = new URLSearchParams(location.search);
     const rk = qs.get("rk") || "";
-    const t  = decodeURIComponent(qs.get("t") || "");
-    if(t) document.getElementById("title").textContent = t;
+    const t  = qs.get("t") ? decodeURIComponent(qs.get("t")) : "";
 
+    // عناصر DOM
+    const titleEl = document.getElementById("title");
+    const btn     = document.getElementById("copyBtn");
+    const btnLbl  = document.getElementById("btnLabel");
+    const hintEl  = document.getElementById("hint");
+    const howtoEl = document.getElementById("howto");
+    const ta      = document.getElementById("ta");
+
+    // ترويسة وديناميكية نص الزر
+    if (t) { titleEl.textContent = t; btnLbl.textContent = `نسخ: ${t}`; }
+
+    // جلب البيانات
     async function load(){
-      if(!rk){ document.getElementById("hint").textContent = "⚠️ Missing rk"; return; }
-      try {
+      if(!rk){ hintEl.className = "hint err"; hintEl.textContent = "⚠️ Missing rk"; btn.disabled = true; return; }
+      if(!/^https/.test(BASE_EXEC)){ hintEl.className = "hint err"; hintEl.textContent = "⚠️ exec URL غير مُعرّف"; btn.disabled = true; return; }
+
+      try{
         const url = `${BASE_EXEC}?rk=${encodeURIComponent(rk)}&json=1`;
-        const res = await fetch(url, {mode:"cors"});
+        const res = await fetch(url, { mode: "cors", cache: "no-store" });
         if(!res.ok) throw new Error("network");
         const data = await res.json();
+
         window.__PROMPT__ = data.prompt || "";
-        document.getElementById("hint").textContent = data.howto || "جاهز للنسخ ✅";
-      } catch(e){
-        document.getElementById("hint").textContent = "⚠️ تعذر جلب البيانات";
+        howtoEl.textContent = data.howto || "";
+        hintEl.className = "hint ok";
+        hintEl.textContent = "جاهز للنسخ ✅";
+
+        // إن كان العنوان فاضي والـ id موجود، نستخدمه
+        if(!t && data.id){ titleEl.textContent = data.id; btnLbl.textContent = `نسخ: ${data.id}`; }
+      }catch(e){
+        hintEl.className = "hint err";
+        hintEl.textContent = "⚠️ تعذر جلب البيانات";
       }
     }
-    load();
 
-    document.getElementById("copyBtn").onclick = async () => {
-      try {
-        const text = window.__PROMPT__ || "";
-        const ta = document.getElementById("ta");
+    // تأثير ripple للزر
+    btn.addEventListener("click", (ev) => {
+      const r = document.createElement("span");
+      const d = Math.max(btn.clientWidth, btn.clientHeight);
+      const rect = btn.getBoundingClientRect();
+      r.className = "ripple";
+      r.style.width = r.style.height = d + "px";
+      r.style.left = (ev.clientX - rect.left - d/2) + "px";
+      r.style.top  = (ev.clientY - rect.top  - d/2) + "px";
+      btn.appendChild(r);
+      setTimeout(()=> r.remove(), 600);
+    }, { passive:true });
+
+    // النسخ مع حالات نجاح/فشل
+    async function copyNow(){
+      const text = window.__PROMPT__ || "";
+      if(!text){
+        hintEl.className = "hint err";
+        hintEl.textContent = "⚠️ لا يوجد نص للنسخ (تحقق من البيانات)";
+        return;
+      }
+      try{
         ta.value = text; ta.select(); ta.setSelectionRange(0, ta.value.length);
         let ok = false;
-        try { ok = document.execCommand("copy"); }catch{}
-        if (!ok && navigator.clipboard){ await navigator.clipboard.writeText(text); ok = true; }
-        document.getElementById("hint").textContent = ok ? "تم النسخ ✅" : "انسخ يدويًا";
-      }catch{ document.getElementById("hint").textContent = "انسخ يدويًا"; }
-    };
+        try{ ok = document.execCommand("copy"); }catch{}
+        if(!ok && navigator.clipboard){ await navigator.clipboard.writeText(text); ok = true; }
+
+        hintEl.className = "hint ok";
+        hintEl.textContent = "تم النسخ ✅";
+        // انيميشن صغيرة على الزر
+        btn.style.transform = "scale(0.985)";
+        setTimeout(()=> btn.style.transform = "", 130);
+      }catch{
+        hintEl.className = "hint err";
+        hintEl.textContent = "⚠️ انسخ يدويًا";
+        alert("اضغط مطوّلًا لنسخ النص أو Ctrl+C");
+      }
+    }
+
+    btn.addEventListener("click", copyNow);
+    load();
   </script>
 </body>
 </html>
