@@ -2,80 +2,128 @@
 <html lang="ar" dir="auto">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Copy Prompt</title>
   <style>
     :root{
       --bg:#0b1220; --bg2:#0e1628;
-      --card:#101a2f; --muted:#cbd5e1;
-      --accent:#ffd04d; --accent2:#ffbd2b; --ok:#22c55e; --err:#f43f5e;
+      --card:#0f1a30; --edge:#1f2a44;
+      --muted:#cbd5e1; --ok:#22c55e; --err:#f43f5e;
+      --accent:#ffd04d; --accent2:#ffbd2b;
+      --maxw: min(900px, 96vw);
+      --btnH: 68px;
+      --radius: 26px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:#fff; background:
-        radial-gradient(900px 600px at 100% -10%, #14213f, transparent 55%),
-        radial-gradient(900px 600px at 0% -10%, #121a34, transparent 50%),
+      color:#fff;
+      background:
+        radial-gradient(900px 600px at 100% -10%, #15213f, transparent 55%),
+        radial-gradient(900px 600px at   0% -10%, #121a34, transparent 50%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      display:flex; align-items:center; justify-content:center; padding:18px;
+      display:flex; align-items:center; justify-content:center;
+      padding:18px;
     }
-    .wrap{ width:min(920px, 96vw); }
+    .wrap{ width:var(--maxw); }
+    .logo{ display:flex; justify-content:center; margin:0 0 10px; }
+    .logo img{ width:min(220px,60vw); height:auto; display:block; }
+
     .card{
-      background:linear-gradient(180deg, #0e172b, #0d1629);
-      border:1px solid #1f2a44; border-radius:26px;
-      box-shadow:0 30px 120px rgba(0,0,0,.55);
-      padding:28px 20px; text-align:center;
+      background:linear-gradient(180deg,#0e172b,#0d1629);
+      border:1px solid var(--edge); border-radius:var(--radius);
+      box-shadow:0 36px 140px rgba(0,0,0,.55);
+      padding:24px 18px 26px; text-align:center;
     }
     .title{
-      margin:0 0 14px; font-weight:900; letter-spacing:.2px; line-height:1.15;
-      font-size:clamp(24px, 6vw, 40px); word-break:break-word;
+      margin:4px 0 14px; line-height:1.12; letter-spacing:.2px;
+      font-weight:900;
     }
-    .howto{
-      margin:8px auto 0; color:var(--muted);
-      font-size:clamp(14px, 3.8vw, 16px); white-space:pre-wrap; word-break:break-word;
+    .tline{
+      display:block;
+      font-size:clamp(22px, 6.8vw, 40px);
+      word-break:break-word;
     }
+    .tline.en{ direction:ltr; font-size:clamp(20px, 5.6vw, 32px); opacity:.95 }
+
+    .loader{
+      display:inline-flex; align-items:center; gap:10px; color:var(--muted);
+      font-size:15px; margin:6px 0 14px;
+    }
+    .spin{
+      width:16px; height:16px; border-radius:50%;
+      border:3px solid rgba(255,255,255,.18); border-top-color:#fbbf24;
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg) } }
+
     .btn{
-      --h:64px;
       position:relative; display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      min-height:var(--h); padding:0 26px; border-radius:18px; border:0; cursor:pointer;
+      min-height:var(--btnH); padding:0 28px; border-radius:18px; border:0; cursor:pointer;
       font-weight:900; font-size:clamp(16px, 4.5vw, 20px);
-      background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#000;
-      box-shadow:0 18px 60px rgba(0,0,0,.35); transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000;
+      box-shadow:0 18px 64px rgba(0,0,0,.35);
+      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
       -webkit-tap-highlight-color:transparent; overflow:hidden;
     }
-    .btn:hover{ transform:translateY(-1px); box-shadow:0 22px 70px rgba(0,0,0,.42); filter:saturate(1.03); }
-    .btn:active{ transform:scale(.985); }
-    .btn[disabled]{ opacity:.6; cursor:progress; }
-    .btn .ico{ width:22px; height:22px; display:inline-block }
-    .hint{
-      margin-top:14px; font-size:15px; color:var(--muted);
-      display:flex; align-items:center; justify-content:center; gap:8px;
-    }
-    .hint .dot{ width:10px; height:10px; border-radius:50%; background:#fbbf24; box-shadow:0 0 0 0 rgba(251,191,36,.6); animation:pulse 1.2s infinite }
-    @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(251,191,36,.6)} 70%{box-shadow:0 0 0 12px rgba(251,191,36,0)} 100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 22px 78px rgba(0,0,0,.42); filter:saturate(1.03) }
+    .btn:active{ transform:scale(.985) }
+    .btn[disabled]{ opacity:.6; cursor:progress }
+
+    .ico{ width:22px; height:22px; display:inline-block }
+    .hint{ margin-top:12px; color:var(--muted); font-size:14px; min-height:20px }
     .hint.ok{ color:var(--ok) }
     .hint.err{ color:var(--err) }
-    textarea{ position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0 }
-    /* ripple effect */
+
+    .howto{
+      margin:18px auto 0; padding:18px 16px; text-align:center; white-space:pre-wrap; word-break:break-word;
+      color:#e5e7eb; background:#0f1627d0; border:1px solid var(--edge);
+      border-radius:18px; display:none;
+      font-size:clamp(14px,3.8vw,16px);
+    }
+    .howto.show{ display:block; animation:pop .28s ease-out }
+    @keyframes pop{ from{ opacity:0; transform:translateY(8px) scale(.98) } to{ opacity:1; transform:none } }
+
+    /* success animation inside button */
+    .btn.done{
+      background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff;
+      animation:btnPop .28s ease;
+    }
+    @keyframes btnPop{ 0%{transform:scale(.985)} 70%{transform:scale(1.02)} 100%{transform:scale(1)} }
     .ripple{
       position:absolute; border-radius:50%; transform:scale(0); pointer-events:none;
-      background:rgba(255,255,255,.35); animation:ripple .6s linear;
+      background:rgba(255,255,255,.38); animation:ripple .6s linear;
     }
     @keyframes ripple{ to { transform:scale(4); opacity:0 } }
+
+    @media (max-width:520px){
+      .card{ padding:22px 14px 24px }
+      .btn{ width:100%; min-height:72px; font-size:18px }
+      .logo img{ width:min(180px,58vw) }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card" role="region" aria-label="Copy prompt panel">
-      <h1 class="title" id="title">Copy Prompt</h1>
+    <div class="logo"><img id="logo" alt="logo"/></div>
 
-      <button class="btn" id="copyBtn" type="button">
+    <div class="card" role="region" aria-label="Copy prompt">
+      <div class="title">
+        <span class="tline ar" id="tAr"></span>
+        <span class="tline en" id="tEn"></span>
+      </div>
+
+      <!-- لودينج يظهر أولاً -->
+      <div class="loader" id="loader"><span class="spin"></span> <span>جارٍ جلب البيانات…</span></div>
+
+      <!-- زر النسخ مخفي حتى يكتمل الجلب -->
+      <button class="btn" id="copyBtn" type="button" style="display:none" aria-live="polite">
         <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M9 8h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/><path d="M7 12H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/></svg>
-        <span id="btnLabel">نسخ البرومبت</span>
+        <span>نسخ البرومبت / Copy Prompt</span>
       </button>
 
-      <div class="hint" id="hint"><span class="dot"></span> جارٍ جلب البيانات…</div>
+      <div class="hint" id="hint"></div>
       <div class="howto" id="howto"></div>
 
       <textarea id="ta" readonly aria-hidden="true"></textarea>
@@ -83,89 +131,117 @@
   </div>
 
   <script>
-    // رابط الويب آب (exec) — تم ضبطه حسب طلبك
+    /* ====== إعداداتك ====== */
+    // رابط الويب آب (exec)
     const BASE_EXEC = "https://script.google.com/macros/s/AKfycbyu4WO5D0W-ft1mP3JnWHjIRYzGfmE3wIjjRZUiKZ5bVbPe5-tGIx2k_UvsxRO7sIf1/exec";
+    // ضع رابط شعارك هنا عندما ترسله لي
+    const LOGO_URL = "https://i.ibb.co/3mRk61Yt/shihab-logo.png"; // استبدله برابط صورتك لاحقًا
 
-    // قراءة باراميترات الرابط
-    const qs = new URLSearchParams(location.search);
-    const rk = qs.get("rk") || "";
-    const t  = qs.get("t") ? decodeURIComponent(qs.get("t")) : "";
-
-    // عناصر DOM
-    const titleEl = document.getElementById("title");
-    const btn     = document.getElementById("copyBtn");
-    const btnLbl  = document.getElementById("btnLabel");
+    /* ====== عناصر DOM ====== */
+    const tAr = document.getElementById("tAr");
+    const tEn = document.getElementById("tEn");
+    const copyBtn = document.getElementById("copyBtn");
+    const loader  = document.getElementById("loader");
     const hintEl  = document.getElementById("hint");
     const howtoEl = document.getElementById("howto");
     const ta      = document.getElementById("ta");
+    document.getElementById("logo").src = LOGO_URL;
 
-    // ترويسة وديناميكية نص الزر
-    if (t) { titleEl.textContent = t; btnLbl.textContent = `نسخ: ${t}`; }
+    /* ====== أدوات لغوية ====== */
+    const isAr = (s)=> /[\u0600-\u06FF]/.test(s||"");
+    function splitBi(str){
+      const txt = (str||"").trim().replace(/\s+/g," ");
+      if(!txt) return {ar:"", en:""};
+      const parts = txt.split(/[-–—|/•·]+/).map(p=>p.trim()).filter(Boolean);
+      if(parts.length>1){
+        let ar=[], en=[]; parts.forEach(p => (isAr(p)?ar:en).push(p));
+        return { ar: ar.join(" "), en: en.join(" ") };
+      }
+      // fallback كلمة بكلمة
+      let ar=[], en=[]; txt.split(" ").forEach(w => (isAr(w)?ar:en).push(w));
+      return { ar: ar.join(" "), en: en.join(" ") };
+    }
+    function renderTitle(s){
+      const {ar,en} = splitBi(s);
+      tAr.textContent = ar || "";
+      tEn.textContent = en || "";
+      tAr.style.display = ar ? "block" : "none";
+      tEn.style.display = en ? "block" : "none";
+      if(!ar && !en){ tAr.textContent = s || "Copy Prompt"; tAr.style.display = "block"; }
+    }
 
-    // جلب البيانات
+    /* ====== قراءة باراميترات الرابط ====== */
+    const qs = new URLSearchParams(location.search);
+    const rk = qs.get("rk") || "";
+    const t  = qs.get("t") ? decodeURIComponent(qs.get("t")) : "";
+    renderTitle(t);
+
+    /* ====== جلب البيانات وإدارة حالة الزر ====== */
     async function load(){
-      if(!rk){ hintEl.className = "hint err"; hintEl.textContent = "⚠️ Missing rk"; btn.disabled = true; return; }
-      if(!/^https/.test(BASE_EXEC)){ hintEl.className = "hint err"; hintEl.textContent = "⚠️ exec URL غير مُعرّف"; btn.disabled = true; return; }
-
+      if(!rk){ loader.style.display="none"; hintEl.className="hint err"; hintEl.textContent="⚠️ Missing rk"; return; }
       try{
         const url = `${BASE_EXEC}?rk=${encodeURIComponent(rk)}&json=1`;
-        const res = await fetch(url, { mode: "cors", cache: "no-store" });
+        const res = await fetch(url, { mode:"cors", cache:"no-store" });
         if(!res.ok) throw new Error("network");
         const data = await res.json();
 
         window.__PROMPT__ = data.prompt || "";
-        howtoEl.textContent = data.howto || "";
+        window.__HOWTO__  = data.howto || "";
+
+        // إظهار الزر بعد الجلب
+        loader.style.display = "none";
+        copyBtn.style.display = "inline-flex";
         hintEl.className = "hint ok";
         hintEl.textContent = "جاهز للنسخ ✅";
 
-        // إن كان العنوان فاضي والـ id موجود، نستخدمه
-        if(!t && data.id){ titleEl.textContent = data.id; btnLbl.textContent = `نسخ: ${data.id}`; }
+        // لو العنوان فاضي استخدم id
+        if(!t && data.id){ renderTitle(data.id); }
       }catch(e){
+        loader.style.display = "none";
         hintEl.className = "hint err";
         hintEl.textContent = "⚠️ تعذر جلب البيانات";
       }
     }
 
-    // تأثير ripple للزر
-    btn.addEventListener("click", (ev) => {
+    // تأثير ripple داخل الزر
+    copyBtn.addEventListener("click", (ev)=>{
       const r = document.createElement("span");
-      const d = Math.max(btn.clientWidth, btn.clientHeight);
-      const rect = btn.getBoundingClientRect();
+      const d = Math.max(copyBtn.clientWidth, copyBtn.clientHeight);
+      const rect = copyBtn.getBoundingClientRect();
       r.className = "ripple";
       r.style.width = r.style.height = d + "px";
       r.style.left = (ev.clientX - rect.left - d/2) + "px";
       r.style.top  = (ev.clientY - rect.top  - d/2) + "px";
-      btn.appendChild(r);
+      copyBtn.appendChild(r);
       setTimeout(()=> r.remove(), 600);
     }, { passive:true });
 
-    // النسخ مع حالات نجاح/فشل
+    // النسخ + إظهار كيف يُستخدم بعد النجاح
     async function copyNow(){
       const text = window.__PROMPT__ || "";
-      if(!text){
-        hintEl.className = "hint err";
-        hintEl.textContent = "⚠️ لا يوجد نص للنسخ (تحقق من البيانات)";
-        return;
-      }
+      if(!text){ hintEl.className="hint err"; hintEl.textContent="⚠️ لا يوجد نص للنسخ"; return; }
+
       try{
         ta.value = text; ta.select(); ta.setSelectionRange(0, ta.value.length);
-        let ok = false;
+        let ok=false;
         try{ ok = document.execCommand("copy"); }catch{}
         if(!ok && navigator.clipboard){ await navigator.clipboard.writeText(text); ok = true; }
 
-        hintEl.className = "hint ok";
-        hintEl.textContent = "تم النسخ ✅";
-        // انيميشن صغيرة على الزر
-        btn.style.transform = "scale(0.985)";
-        setTimeout(()=> btn.style.transform = "", 130);
+        // حالة نجاح
+        copyBtn.classList.add("done");
+        hintEl.className="hint ok"; hintEl.textContent="تم النسخ ✅";
+        // عرض كيف يُستخدم بعد النسخ فقط
+        const htxt = String(window.__HOWTO__||"").trim();
+        if(htxt){ howtoEl.textContent = htxt; howtoEl.classList.add("show"); }
+        setTimeout(()=> copyBtn.classList.remove("done"), 600);
       }catch{
-        hintEl.className = "hint err";
-        hintEl.textContent = "⚠️ انسخ يدويًا";
+        hintEl.className="hint err"; hintEl.textContent="⚠️ انسخ يدويًا";
         alert("اضغط مطوّلًا لنسخ النص أو Ctrl+C");
       }
     }
+    copyBtn.addEventListener("click", copyNow);
 
-    btn.addEventListener("click", copyNow);
+    // ابدأ التحميل
     load();
   </script>
 </body>
