@@ -182,6 +182,10 @@
         await navigator.clipboard.writeText(text);
         copyBtn.classList.add("done");
         copyBtn.querySelector(".label").textContent = "تم النسخ / Copied ✅";
+
+        // ⭐️ استدعاء API لزيادة العداد
+        fetch(`${BASE_EXEC}?rk=${encodeURIComponent(rk)}&count=1`, { method: "GET" }).catch(()=>{});
+
         if(window.__HOWTO__){
           howtoEl.textContent = window.__HOWTO__;
           howtoEl.classList.add("show");
