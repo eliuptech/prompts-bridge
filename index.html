@@ -37,7 +37,17 @@
 
     .wrap{ width:var(--maxw); }
     .logo{ display:flex; justify-content:center; margin:0 0 14px; }
-    .logo img{ width:clamp(120px,18vw,180px); height:auto; border-radius:20px; }
+    .logo img{
+      width:clamp(120px,18vw,180px); /* للجوال والتابلت */
+      height:auto;
+      border-radius:20px;
+    }
+    /* نسخة الديسك توب */
+    @media (min-width:1024px){
+      .logo img{
+        width:min(520px,88%);
+      }
+    }
 
     .card{
       background:var(--card);
@@ -101,7 +111,6 @@
 
     @media (max-width:520px){
       #copyBtn{ width:100%; min-height:72px; font-size:17px; }
-      .logo img{ width:min(420px,92vw) }
     }
   </style>
 </head>
